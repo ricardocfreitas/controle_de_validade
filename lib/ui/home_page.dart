@@ -29,7 +29,7 @@ class _ProdutosVencidosPageState extends State<ProdutosVencidosPage> {
       builder: (context, _) {
         final congelados = store.congelados;
         return Scaffold(
-          appBar: AppBar(title: Text('Controle de Validade')),
+          appBar: AppBar(title: Text('Controle de Validade'), centerTitle: true),
           body: ListView.builder(
             itemCount: congelados.length,
             itemBuilder: (context, index) {

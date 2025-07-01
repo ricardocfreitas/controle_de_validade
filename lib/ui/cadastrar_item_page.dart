@@ -4,9 +4,9 @@ import '../repositores/congelado_model.dart' show CongeladoModel;
 import '../stores/congelado_store.dart';
 
 class CadastroItemPage extends StatefulWidget {
-//  const CadastroItemPage({Key? key}) : super(key: key);
+  //  const CadastroItemPage({Key? key}) : super(key: key);
   final CongeladoStore store;
-  
+
   const CadastroItemPage({Key? key, required this.store}) : super(key: key);
 
   @override
@@ -17,7 +17,8 @@ class _CadastroItemPageState extends State<CadastroItemPage> {
   final _formKey = GlobalKey<FormState>();
   final _descricaoController = TextEditingController();
   final _localizacaoController = TextEditingController();
-
+  final FocusNode _descricaoFocusNode = FocusNode();
+  
   late DateTime _dataProducao;
   late DateTime _dataValidade;
 
@@ -26,12 +27,17 @@ class _CadastroItemPageState extends State<CadastroItemPage> {
     super.initState();
     _dataProducao = DateTime.now();
     _dataValidade = _dataProducao.add(const Duration(days: 30));
+    // Dê foco ao campo descrição ao entrar na página
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _descricaoFocusNode.requestFocus();
+    });
   }
 
   @override
   void dispose() {
     _descricaoController.dispose();
     _localizacaoController.dispose();
+    _descricaoFocusNode.dispose();
     super.dispose();
   }
 
@@ -80,12 +86,16 @@ class _CadastroItemPageState extends State<CadastroItemPage> {
             children: [
               TextFormField(
                 controller: _descricaoController,
+                focusNode: _descricaoFocusNode,
                 decoration: const InputDecoration(
                   labelText: 'Descrição',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Informe a descrição' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Informe a descrição'
+                            : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -94,8 +104,11 @@ class _CadastroItemPageState extends State<CadastroItemPage> {
                   labelText: 'Localização',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Informe a localização' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Informe a localização'
+                            : null,
               ),
               const SizedBox(height: 16),
               GestureDetector(
@@ -140,14 +153,18 @@ class _CadastroItemPageState extends State<CadastroItemPage> {
                       if (_formKey.currentState!.validate()) {
                         // Aqui você pode salvar os dados se quiser
                         final novoItem = CongeladoModel(
-                          id: UniqueKey().toString(), // ou use outro método para gerar id
+                          id:
+                              UniqueKey()
+                                  .toString(), // ou use outro método para gerar id
                           name: _descricaoController.text,
                           localizacao: _localizacaoController.text,
                           dataproducao: _dataProducao,
                           datavalidade: _dataValidade,
                         );
                         widget.store.addCongelado(novoItem);
-                        Navigator.pop(context); // Retorna para a página anterior
+                        Navigator.pop(
+                          context,
+                        ); // Retorna para a página anterior
                       }
                     },
                   ),
