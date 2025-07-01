@@ -35,14 +35,26 @@ class _ProdutosVencidosPageState extends State<ProdutosVencidosPage> {
             itemBuilder: (context, index) {
               final congelado = congelados[index];
 
-              return ItemCard(
-                descricao: congelado.name,
-                localizacao: congelado.localizacao,
-                dataValidade: congelado.datavalidade,
-                onTap: () {
-                  // Ação ao tocar no card
-                  print('Tocou no item: ${congelado.name}');
+              return Dismissible(
+                key: Key(congelado.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  color: Colors.red,
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (direction) {
+                  store.removerCongelado(congelado); // Você vai criar esse método na store
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${congelado.name} removido')),
+                  );
                 },
+                child: ItemCard(
+                  descricao: congelado.name,
+                  localizacao: congelado.localizacao,
+                  dataValidade: congelado.datavalidade,
+              ),
               );
             },
           ),

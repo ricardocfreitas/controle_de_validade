@@ -21,4 +21,9 @@ class CongeladoStore extends ChangeNotifier {
     _congelados.sort((a, b) => a.datavalidade.compareTo(b.datavalidade));
     notifyListeners();
   }
+  
+  void removerCongelado(CongeladoModel congelado) {
+    _congelados.removeWhere((item) => item.id == congelado.id);
+    notifyListeners();
+  }  
 }
